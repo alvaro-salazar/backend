@@ -6,6 +6,11 @@ import com.denkitronik.backend.apirest.models.entity.Cliente;
 
 public interface IClienteService {
 	
-	public List<Cliente> findAll();
+	List<Cliente> findAll();
 
+	void save(Cliente cliente);
+
+	Cliente findById(Long id);
+
+	void delete(Cliente cliente);
 }
