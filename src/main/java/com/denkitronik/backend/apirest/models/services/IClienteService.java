@@ -8,9 +8,9 @@ public interface IClienteService {
 	
 	List<Cliente> findAll();
 
-	void save(Cliente cliente);
+	Cliente save(Cliente cliente);
 
 	Cliente findById(Long id);
 
-	void delete(Cliente cliente);
+	void delete(Long id);
 }
