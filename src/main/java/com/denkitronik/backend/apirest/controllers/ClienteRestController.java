@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,12 @@ public class ClienteRestController {
 		return clienteService.findAll();
 	}
 
+	@GetMapping("/clientes/page/{page}")
+	public Page<Cliente> index(@PathVariable Integer page) {
+		Pageable pageable = PageRequest.of(page, 4);
+		return clienteService.findAll(pageable);
+	}
+
 	@GetMapping("/clientes/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 
@@ -48,13 +56,13 @@ public class ClienteRestController {
 		try {
 			cliente = clienteService.findById(id);
 		} catch(DataAccessException e) {
-			response.put("mensaje", "Error consultando el cliente");
+			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		if(cliente == null) {
-			response.put("mensaje", "El cliente id: ".concat(id.toString().concat(" no existe.")));
+			response.put("mensaje", "El cliente ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
@@ -81,12 +89,12 @@ public class ClienteRestController {
 		try {
 			clienteNew = clienteService.save(cliente);
 		} catch(DataAccessException e) {
-			response.put("mensaje", "Error guardando o actualizando el cliente");
+			response.put("mensaje", "Error al realizar el insert en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "Cliente creado exitosamente.");
+		response.put("mensaje", "El cliente ha sido creado con éxito!");
 		response.put("cliente", clienteNew);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
@@ -104,7 +112,7 @@ public class ClienteRestController {
 
 			List<String> errors = result.getFieldErrors()
 					.stream()
-					.map(err -> "Campo '" + err.getField() +"' "+ err.getDefaultMessage())
+					.map(err -> "El campo '" + err.getField() +"' "+ err.getDefaultMessage())
 					.collect(Collectors.toList());
 
 			response.put("errors", errors);
