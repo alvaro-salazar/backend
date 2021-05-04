@@ -2,6 +2,7 @@ package com.denkitronik.backend.apirest.models.services;
 
 import java.util.List;
 
+import com.denkitronik.backend.apirest.models.entity.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +45,11 @@ public class ClienteServiceImpl implements IClienteService{
 	@Transactional
 	public void delete(Long id) {
 		clienteDao.deleteById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Region> findAllRegiones() {
+		return clienteDao.findAllRegiones();
 	}
 }

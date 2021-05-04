@@ -1,19 +1,14 @@
 package com.denkitronik.backend.apirest.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -42,6 +37,12 @@ public class Cliente implements Serializable {
 	private Date createAt;
 
 	private String foto;
+
+	@NotNull(message="La región no puede ser vacia")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="region_id")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private Region region;
 
 	@PrePersist
 	public void prePersist() {
@@ -92,5 +93,12 @@ public class Cliente implements Serializable {
 
 	public void setFoto(String foto) { this.foto = foto; }
 
+	public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
 	private static final long serialVersionUID = 1L;
 }
